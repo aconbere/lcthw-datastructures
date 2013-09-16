@@ -64,3 +64,5 @@ char *test_unshift() {
 
   return NULL;
 }
+
+RUN_TESTS(all_tests);
