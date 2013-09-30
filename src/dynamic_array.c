@@ -78,3 +78,32 @@ int DArray_contract(DArray *array) {
   return DArray_resize(array, DArray_max(array->end, (int) array->expand_rate) + 1);
 }
 
+int DArray_push(DArray *array, void *el) {
+  array->contents[array->end] = el;
+  array->end++;
+
+  if (array->end >= array->max) {
+    return DArray_expand(array);
+  } else {
+    return 0;
+  }
+}
+
+void *DArray_pop(DArray *array) {
+  check(array->end > 0, "can't shrink array beyond zero");
+
+  void *el = DArray_remove(array, array->end);
+  array->end--;
+
+  if (array->end > (int)array->expand_rate && array->end % array->expand_rate) {
+    DArray_contract(array);
+  }
+  return el;
+error:
+  return NULL;
+}
+
+void DArray_clear_destroy(DArray *array) {
+  DArray_clear(array);
+  DArray_destroy(array);
+}

@@ -1,4 +1,5 @@
-#include "linked_list.h"
+#include <linked_list.h>
+#include <dbg.h>
 
 List *List_create() {
   return calloc(1, sizeof(List));
@@ -14,31 +15,29 @@ void List_destroy(List *list) {
   free(list);
 }
 
+void List_clear(List *list) {
+  LIST_FOREACH(list, first, next, cur) {
+    free(cur->value);
+  }
+}
+
 void List_clear_destroy(List *list) {
   List_clear(list);
   List_destroy(list);
 }
 
-void List_clear(List *list) {
-  LIST_FOREACH(list, first, next, cur) {
-    if (cur->value) {
-      free(cur->value);
-    }
-  }
-}
-
 void List_push(List *list, void *value) {
-  ListNode *new_node = calloc(1, sizeof(ListNode));
-  check_mem(new_node);
-  new_node->value = value;
+  ListNode *node = calloc(1, sizeof(ListNode));
+  check_mem(node);
+  node->value = value;
 
   if (list->last == NULL) {
-    list->first = new_node;
-    list->last = new_node;
+    list->first = node;
+    list->last = node;
   } else {
-    list->last->next = new_node;
-    new_node->prev = list->last;
-    list->last = new_node;
+    list->last->next = node;
+    node->prev = list->last;
+    list->last = node;
   }
 
   list->count++;
@@ -47,17 +46,18 @@ error:
 }
 
 void List_unshift(List *list, void *value) {
-  ListNode * new_node = calloc(1, sizeof(ListNode));
-  check_mem(new_node);
-  new_node->value = value;
+  ListNode *node = calloc(1, sizeof(ListNode));
+  check_mem(node);
+
+  node->value = value;
 
   if (list->first == NULL) {
-    list->first = new_node;
-    list->last = new_node;
+    list->first = node;
+    list->last = node;
   } else {
-    list->first->next = new_node;
-    new_node->prev = list->last;
-    list->last = new_node;
+    node->next = list->first;
+    list->first->prev = node;
+    list->first = node;
   }
 
   list->count++;
@@ -76,23 +76,25 @@ void *List_remove(List *list, ListNode *node) {
   check(list->first && list->last, "List is empty.");
   check(node, "node can't be NULL");
 
-  if (list->first == node && list->last == node) {
+  if (node == list->first && node == list->last) {
     // we are the only node
     list->first = NULL;
     list->last = NULL;
-  } else if (list->first == node) {
+  } else if (node == list->first) {
     list->first = node->next;
+    check(list->first != NULL, "Invalid list, somehow got a first that is NULL.");
     list->first->prev = NULL;
   } else if (list->last == node) {
     list->last = node->prev;
+    check(list->last != NULL, "Invalid list, somehow got a next that is NULL.");
     list->last->next = NULL;
   } else {
     // simply excise the current node;
-    ListNode *next = node->next;
-    ListNode *prev = node->prev;
+    ListNode *after = node->next;
+    ListNode *before = node->prev;
 
-    prev->next = next;
-    next->prev = prev;
+    after->prev = before;
+    before->next = after;
   }
 
   list->count--;

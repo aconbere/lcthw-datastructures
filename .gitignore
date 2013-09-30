@@ -3,3 +3,4 @@ bin/
 *.o
 tests.log
 tests.log.old
+*.dSYM
