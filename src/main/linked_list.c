@@ -28,7 +28,7 @@ void List_clear(List *list) {
 }
 
 void List_push(List *list, void *value) {
-  ListNode * new_node = calloc(1, sizeof(ListNode));
+  ListNode *new_node = calloc(1, sizeof(ListNode));
   check_mem(new_node);
   new_node->value = value;
 
