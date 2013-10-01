@@ -84,7 +84,7 @@ void *List_remove(List *list, ListNode *node) {
     list->first = node->next;
     check(list->first != NULL, "Invalid list, somehow got a first that is NULL.");
     list->first->prev = NULL;
-  } else if (list->last == node) {
+  } else if (node == list->last) {
     list->last = node->prev;
     check(list->last != NULL, "Invalid list, somehow got a next that is NULL.");
     list->last->next = NULL;
@@ -100,6 +100,7 @@ void *List_remove(List *list, ListNode *node) {
   list->count--;
   result = node->value;
   free(node);
+  return result;
 
 error:
   return result;

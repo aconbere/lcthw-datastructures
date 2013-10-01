@@ -44,27 +44,17 @@ char *test_push_pop() {
 }
 
 char *test_unshift() {
-  List_unshift(list, test1);
-  mu_assert(List_first(list) == test1, "Wrong first value");
+    List_unshift(list, test1);
+    mu_assert(List_first(list) == test1, "Wrong first value.");
 
-  List_unshift(list, test2);
-  mu_assert(List_first(list) == test2, "Wrong second value");
+    List_unshift(list, test2);
+    mu_assert(List_first(list) == test2, "Wrong first value");
 
-  List_unshift(list, test3);
-  mu_assert(List_first(list) == test3, "Wrong third value");
-  mu_assert(List_count(list) == 3, "Wrong count on push.");
+    List_unshift(list, test3);
+    mu_assert(List_first(list) == test3, "Wrong last value.");
+    mu_assert(List_count(list) == 3, "Wrong count on unshift.");
 
-  char *val = List_shift(list);
-  mu_assert(val == test3, "Wrong value on pop.");
-
-  val = List_shift(list);
-  mu_assert(val == test2, "Wrong value on pop.");
-
-  val = List_shift(list);
-  mu_assert(val == test1, "Wrong value on pop.");
-  mu_assert(List_count(list) == 0, "Wrong count after pop.");
-
-  return NULL;
+    return NULL;
 }
 
 char *test_remove() {
